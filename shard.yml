@@ -1,8 +1,11 @@
+# shard.yml
 name: crystal-repo
-version: 0.1.0
+version: 0.2.0
+
+description: Git CLI wrapper and GitHub REST API client
 
 authors:
-  - shpeckman <geelenrobin@proton.me>
+  - agent <agent@example.com>
 
 crystal: '>= 1.21.0'
 
