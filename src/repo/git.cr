@@ -1,7 +1,7 @@
-# src/crystal/repo/git.cr
-module Crystal::Repo
+# src/repo/git.cr
+module Repo
   class GitError < Exception
-    getter argv : Array(String)
+    getter argv   : Array(String)
     getter stderr : String
 
     def initialize(@argv : Array(String), @stderr : String)

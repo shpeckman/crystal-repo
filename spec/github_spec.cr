@@ -1,9 +1,9 @@
 # spec/github_spec.cr
 require "./spec_helper"
 
-describe Crystal::Repo::GitHub do
+describe Repo::GitHub do
   it "builds requests with auth and api headers" do
-    github = Crystal::Repo::GitHub.new("token123")
+    github  = Repo::GitHub.new("token123")
     request = github.build_request("GET", "/repos/crystal-lang/crystal")
     request.method.should eq("GET")
     request.resource.should eq("/repos/crystal-lang/crystal")
@@ -14,8 +14,8 @@ describe Crystal::Repo::GitHub do
   end
 
   it "appends query params and json bodies" do
-    github = Crystal::Repo::GitHub.new
-    query = URI::Params.new
+    github = Repo::GitHub.new
+    query  = URI::Params.new
     query["per_page"] = "10"
     request = github.build_request("POST", "user/repos", query, %({"name":"x"}))
     request.resource.should eq("/user/repos?per_page=10")
@@ -27,23 +27,23 @@ describe Crystal::Repo::GitHub do
 
   it "reads the token from the environment" do
     ENV["CRYSTAL_REPO_SPEC_TOKEN"] = "abc"
-    Crystal::Repo::GitHub.from_env("CRYSTAL_REPO_SPEC_TOKEN").token.should eq("abc")
+    Repo::GitHub.from_env("CRYSTAL_REPO_SPEC_TOKEN").token.should eq("abc")
     ENV.delete("CRYSTAL_REPO_SPEC_TOKEN")
-    Crystal::Repo::GitHub.from_env("CRYSTAL_REPO_SPEC_TOKEN").token.should be_nil
+    Repo::GitHub.from_env("CRYSTAL_REPO_SPEC_TOKEN").token.should be_nil
   end
 
   it "extracts the message from error payloads" do
-    error = Crystal::Repo::GitHubError.new(HTTP::Status::NOT_FOUND, %({"message":"Not Found"}))
+    error = Repo::GitHubError.new(HTTP::Status::NOT_FOUND, %({"message":"Not Found"}))
     error.status.should eq(HTTP::Status::NOT_FOUND)
     error.message.to_s.should contain("Not Found")
-    plain = Crystal::Repo::GitHubError.new(HTTP::Status::INTERNAL_SERVER_ERROR, "boom")
+    plain = Repo::GitHubError.new(HTTP::Status::INTERNAL_SERVER_ERROR, "boom")
     plain.message.to_s.should contain("boom")
   end
 
   if ENV["CRYSTAL_REPO_LIVE"]?
     it "queries the live api" do
-      github = Crystal::Repo::GitHub.from_env
-      repo = github.repo("crystal-lang", "crystal")
+      github = Repo::GitHub.from_env
+      repo   = github.repo("crystal-lang", "crystal")
       repo["name"].as_s.should eq("crystal")
       repo["full_name"].as_s.should eq("crystal-lang/crystal")
       github.branches("crystal-lang", "crystal", per_page: 5).should_not be_empty

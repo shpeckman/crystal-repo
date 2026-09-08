@@ -1,12 +1,12 @@
-# src/crystal/repo/github.cr
+# src/repo/github.cr
 require "http/client"
 require "json"
 require "uri"
 
-module Crystal::Repo
+module Repo
   class GitHubError < Exception
     getter status : HTTP::Status
-    getter body : String
+    getter body   : String
 
     def initialize(@status : HTTP::Status, @body : String)
       detail = begin
@@ -24,7 +24,7 @@ module Crystal::Repo
     USER_AGENT      = "crystal-repo/#{VERSION}"
 
     getter api_url : URI
-    getter token : String?
+    getter token   : String?
 
     def initialize(@token : String? = nil, api_url : String = DEFAULT_API_URL)
       @api_url = URI.parse(api_url)
@@ -77,7 +77,7 @@ module Crystal::Repo
       query = query.dup
       query["per_page"] = per_page.to_s
       results = [] of JSON::Any
-      page = 1
+      page    = 1
       loop do
         query["page"] = page.to_s
         chunk = get(path, query).as_a

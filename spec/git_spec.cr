@@ -13,15 +13,15 @@ private def with_tmpdir(& : String ->)
   end
 end
 
-private def spec_repo(dir : String, name : String = "repo") : Crystal::Repo::Git
-  git = Crystal::Repo::Git.init(File.join(dir, name), initial_branch: "main")
+private def spec_repo(dir : String, name : String = "repo") : Repo::Git
+  git = Repo::Git.init(File.join(dir, name), initial_branch: "main")
   git.config("user.name", "Spec")
   git.config("user.email", "spec@example.com")
   git.config("commit.gpgsign", "false")
   git
 end
 
-describe Crystal::Repo::Git do
+describe Repo::Git do
   it "inits, commits and reads history" do
     with_tmpdir do |dir|
       git = spec_repo(dir)
@@ -71,7 +71,7 @@ describe Crystal::Repo::Git do
       File.write(File.join(git.path, "a.txt"), "a\n")
       git.add("a.txt")
       git.commit("init")
-      copy = Crystal::Repo::Git.clone(git.path, File.join(dir, "copy"))
+      copy = Repo::Git.clone(git.path, File.join(dir, "copy"))
       copy.rev_parse("HEAD").should eq(git.rev_parse("HEAD"))
       copy.current_branch.should eq("main")
     end
@@ -91,8 +91,8 @@ describe Crystal::Repo::Git do
 
   it "raises GitError on failure" do
     with_tmpdir do |dir|
-      git = Crystal::Repo::Git.init(dir)
-      error = expect_raises(Crystal::Repo::GitError) { git.rev_parse("HEAD") }
+      git   = Repo::Git.init(dir)
+      error = expect_raises(Repo::GitError) { git.rev_parse("HEAD") }
       error.argv.should eq(["rev-parse", "HEAD"])
       error.message.to_s.should contain("git rev-parse HEAD failed")
     end

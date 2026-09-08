@@ -1,6 +1,6 @@
 # shard.yml
 name: crystal-repo
-version: 0.2.0
+version: 0.3.0
 
 description: Git CLI wrapper and GitHub REST API client
 
